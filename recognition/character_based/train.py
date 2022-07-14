@@ -13,7 +13,7 @@ def main():
     model = model.CRNN(1, 32, 128, 37)
     checkpoint_path = 'checkpoint/crnn.pt'
     data_split = 'data_split/train.txt'
-    plate_dir = 'img_plate/'
+    plate_dir = 'dataset/plates/'
     checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
     model.load_state_dict(checkpoint)
 
@@ -73,6 +73,8 @@ def main():
 
             ##################################################
 
+            if i == 10:
+                break
 
 
         print(f"EPOCH {epoch}, loss {losses}")

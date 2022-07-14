@@ -10,7 +10,7 @@ class Dataset(Dataset):
     CHAR2LABEL = {char: i + 1 for i, char in enumerate(CHARS)}
     LABEL2CHAR = {label: char for char, label in CHAR2LABEL.items()}
 
-    def __init__(self, data_split, img_height=720, img_width=1080, tensor_format=False):
+    def __init__(self, rooth_path, img_height=28, img_width=28, tensor_format=True):
         self.data_split = data_split
         self.list_ = list(open(self.data_split, 'r'))
         self.tensor_format = tensor_format
@@ -25,7 +25,6 @@ class Dataset(Dataset):
 
         img = np.array(img)
         # img = (img / 127.5) - 1.0
-
 
         if self.tensor_format:
             img = torch.FloatTensor(img.transpose(2, 0, 1))
