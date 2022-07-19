@@ -10,15 +10,16 @@ class Dataset(Dataset):
     CHAR2LABEL = {char: i + 1 for i, char in enumerate(CHARS)}
     LABEL2CHAR = {label: char for char, label in CHAR2LABEL.items()}
 
-    def __init__(self, rooth_path, img_height=28, img_width=28, tensor_format=True):
-        self.data_split = data_split
+    def __init__(self, rooth_path, img_height=28, img_width=28, tensor_format=True, mode='train'):
+        self.data_split = rooth_path
+        self.mode = mode
         self.list_ = list(open(self.data_split, 'r'))
         self.tensor_format = tensor_format
         self.img_width = img_width
         self.img_height = img_height
 
     def __getitem__(self, idx):
-        img_path = "./dataset" + self.list_[idx].strip()[1:]
+        img_path = "./dataset/"  + self.list_[idx].strip()[1:]
 
         img = Image.open(img_path)
         # img = img.resize((self.img_width, self.img_height), resample=Image.BILINEAR)
@@ -67,6 +68,6 @@ if __name__ == '__main__':
         print(plate_label)
         print(plate_length)
 
-        plt.imshow(img)
-        plt.show()
+        # plt.imshow(img)
+        # plt.show()
         break

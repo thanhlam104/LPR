@@ -15,7 +15,6 @@ PLATE_HEIGHT_PADDING_FACTOR = 1.5
 
 
 ##################################
-
 def detect_plates(img_original):
     list_possible_plates = []
 

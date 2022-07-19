@@ -24,13 +24,16 @@ for i, (img, box_gt, plate_label, plate_length) in enumerate(dataset):
     list_possible_plate = DetectPlates.detect_plates(img)
     if len(list_possible_plate) > 0:
         iou_plate = []
-        for plate in list_possible_plate:
+
+
+        new_dir = f'dataset/plates/plate_9_19/img{i}/'
+        os.mkdir(new_dir)
+        for j, plate in enumerate(list_possible_plate):
             box_pr_corner = box_center2corner(plate.box)
             iou = iou_per_box(torch.tensor(box_pr_corner), torch.tensor(box_gt))
             iou_plate.append(iou)
-        iou_dataset.append(max(iou_plate))
-
-        # cv2.imwrite(f'dataset/plates/train/img{i}.jpg', list_possible_plate[asarray(iou_plate).argmax()].img_plate)
+            iou_dataset.append(max(iou_plate))
+            cv2.imwrite(f'dataset/plates/plate_9_19/img{i}/img{i}_{j}.jpg', list_possible_plate[asarray(iou_plate).argmax()].img_plate)
 
     else:
         # box_pr_corner = [0, 0, 0, 0]
@@ -38,7 +41,10 @@ for i, (img, box_gt, plate_label, plate_length) in enumerate(dataset):
         iou_dataset.append(0)
         hard_img.append(img)
 
-        # cv2.imwrite(f'dataset/plates/img{i}.jpg', img)
+        new_dir = f'dataset/plates/plate_9_19/img{i}/'
+        os.mkdir(new_dir)
+        cv2.imwrite(f'dataset/plates/plate_9_19/img{i}/img{i}_0.jpg', img)
+
     if i % 500 == 0:
         print(i)
 

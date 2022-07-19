@@ -27,4 +27,4 @@ if __name__ == '__main__':
     model = Segment_character(5)
     x = torch.randn(2, 1, 28, 28)
     output = model(x)
-    print(output)
+    summary(model, (1, 1, 28, 28))

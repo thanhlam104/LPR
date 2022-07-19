@@ -4,6 +4,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from PIL import Image
+from utils import plot_img
 
 
 class Character_dataset(nn.Module):
@@ -55,6 +56,7 @@ if __name__ == '__main__':
     for i, (img, label) in enumerate(char_dataset):
         if i % 30 == 0:
             print(img.shape, label)
+            plot_img(img.permute(1, 2, 0))
 
 
 

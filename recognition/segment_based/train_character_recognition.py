@@ -11,11 +11,11 @@ def main():
     from recognition.segment_based import character_dataset
     warnings.filterwarnings("ignore")
     #################################################################
-    batch_size = 16
+    batch_size = 32
     char_path = 'dataset/characters/'
-    lr = 0.01
+    lr = 0.001
     if torch.cuda.is_available():
-        device = 'cpu'
+        device = 'cuda'
     else:
         device = 'cpu'
 
@@ -24,6 +24,10 @@ def main():
     model = model.Segment_character(36).to(device)
     dataset = character_dataset.Character_dataset(ori_path=char_path)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+    dataset_val = character_dataset.Character_dataset(ori_path=char_path, train=False)
+    dataloader_val = DataLoader(dataset_val, batch_size=batch_size, shuffle=True)
+    print(len(dataloader_val), len(dataset_val))
 
     #################################################################
     CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -36,8 +40,9 @@ def main():
     optimizer = optim.Adam(model.parameters(), lr=lr)
     #################################################################
 
-    for epoch in range(10):
-        losses = 0
+    for epoch in range(30):
+        losses = []
+        accs = []
         for i, (input, target) in enumerate(dataloader):
             input, target = input.to(device), target.to(device)
             output = model(input)
@@ -46,11 +51,40 @@ def main():
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 5)  # gradient clipping with 5
             optimizer.step()
-            losses += loss
+            losses.append(loss.item())
+
+            acc = accuracy(output, target)
+            accs.append(acc.item())
             #################################################
 
-        print(f"EPOCH {epoch+1}, loss {losses}")
+        losses_val = []
+        accs_val = []
+        for i, (input, target) in enumerate(dataloader_val):
+            input, target = input.to(device), target.to(device)
+            output = model(input)
+
+            loss = criterion(output, target)
+            acc = accuracy(output, target)
+            losses_val.append(loss.item())
+            accs_val.append(acc.item())
+
+
+        print(f"EPOCH {epoch+1}, train loss {mean(losses)}, train accuracy {mean(accs)}, "
+              f"val loss {mean(losses_val)}, val accuracy {mean(accs_val)}")
         print()
+
+    #################################################################
+
+
+
+def accuracy(output, target):
+    pred = output.argmax(dim=1)
+    acc = sum(pred == target) / len(pred)
+    return acc
+
+def mean(arr):
+    m = round(sum(arr) / len(arr), 3)
+    return m
 
 
 if __name__ == '__main__':
