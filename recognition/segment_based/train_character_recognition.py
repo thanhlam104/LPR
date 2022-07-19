@@ -1,23 +1,29 @@
 def main():
     import os
+    import warnings
     import torch
     import numpy as np
-    from torch.nn import CrossEntropyLoss
+    from torch.nn import CrossEntropyLoss, NLLLoss
     import torch.optim as optim
     from torch.utils.data import DataLoader
 
     from recognition.segment_based import model
     from recognition.segment_based import character_dataset
-
+    warnings.filterwarnings("ignore")
     #################################################################
-    batch_size = 8
+    batch_size = 16
     char_path = 'dataset/characters/'
-    lr = 0.001
+    lr = 0.01
+    if torch.cuda.is_available():
+        device = 'cpu'
+    else:
+        device = 'cpu'
+
+    print(device)
     #################################################################
-    model = model.Segment_character(36)
+    model = model.Segment_character(36).to(device)
     dataset = character_dataset.Character_dataset(ori_path=char_path)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-    print(len(dataloader))
 
     #################################################################
     CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -26,12 +32,14 @@ def main():
 
     #################################################################
     criterion = CrossEntropyLoss()
+    # criterion = NLLLoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
     #################################################################
 
-    for epoch in range(5):
+    for epoch in range(10):
         losses = 0
         for i, (input, target) in enumerate(dataloader):
+            input, target = input.to(device), target.to(device)
             output = model(input)
             loss = criterion(output, target)
             optimizer.zero_grad()
@@ -41,8 +49,7 @@ def main():
             losses += loss
             #################################################
 
-        print(f"EPOCH {epoch}, loss {losses}")
-        print()
+        print(f"EPOCH {epoch+1}, loss {losses}")
         print()
 
 

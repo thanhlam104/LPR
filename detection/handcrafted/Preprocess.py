@@ -2,9 +2,10 @@ import cv2
 import numpy as np
 from utils import plot_img
 
-GAUSSIAN_SMOOTH_FILTER_SIZE = (5, 5)
-ADAPTIVE_THRESH_BLOCK_SIZE = 19
-ADAPTIVE_THRESH_WEIGHT = 9
+
+GAUSSIAN_SMOOTH_FILTER_SIZE = (3, 3)
+ADAPTIVE_THRESH_BLOCK_SIZE = 49
+ADAPTIVE_THRESH_WEIGHT = 1
 
 
 def preprocess(imgOriginal):
@@ -54,6 +55,6 @@ def maximize_contrast(imgGrayscale):
 
 
 if __name__ == '__main__':
-    path = './images/img_010001.jpg'
+    path = 'dataset/images/img_010001.jpg'
     img = cv2.imread(path)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
