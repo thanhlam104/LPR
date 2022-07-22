@@ -47,9 +47,9 @@ def detect_box(data_split, mode='train'):
     nonDetect_img = 0
 
     for i, (img, box_gt) in enumerate(dataset):
-        list_possible_plate = DetectPlates.detect_plates(img, 19, 9)
-        # list_possible_plate2 = DetectPlates.detect_plates(img, 39, 1)
-        # list_possible_plate = remove_overlapping_plate(list_possible_plate1, list_possible_plate2)
+        list_possible_plate1 = DetectPlates.detect_plates(img, 19, 9)
+        list_possible_plate2 = DetectPlates.detect_plates(img, 39, 1)
+        list_possible_plate = remove_overlapping_plate(list_possible_plate1, list_possible_plate2)
 
         if len(list_possible_plate) > 0:
             iou_plate = []
