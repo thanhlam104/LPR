@@ -33,7 +33,7 @@ def show_results(chars, model):
     for i, ch in enumerate(chars):
         img = cv2.resize(ch, (28, 28), interpolation=cv2.INTER_AREA)
         img = img.reshape(1, 1, 28, 28)
-        img = torch.FloatTensor(img).cuda()
+        img = torch.FloatTensor(img).cpu()
         output = model(img)[0].argmax()
         character = LABEL2CHAR[int(output)]
         pred.append(character)
