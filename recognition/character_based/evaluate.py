@@ -1,5 +1,5 @@
 from torch.nn import CTCLoss
-from recognition.character_based import model
+from recognition.character_based import model_chacter_based
 import warnings
 import torch
 from torchmetrics import CharErrorRate
@@ -62,7 +62,7 @@ def evaluate(crnn, dataloader, criterion, decode_method='beam_search', beam_size
 
 
 if __name__ == "__main__":
-    model = model.CRNN(1, 32, 128, 37).to(device)
+    model = model_chacter_based.CRNN(1, 32, 128, 37).to(device)
     checkpoint_path = 'checkpoint/crnn.pt'
     checkpoint = torch.load(checkpoint_path, map_location=torch.device(device))
     model.load_state_dict(checkpoint)

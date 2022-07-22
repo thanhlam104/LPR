@@ -3,7 +3,7 @@ from torch.nn import CTCLoss
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from plate_dataset import Plate_Dataset
-from recognition.character_based import model
+from recognition.character_based import model_chacter_based
 from evaluate import evaluate
 from utils import plot_img
 import warnings
@@ -57,7 +57,7 @@ def main():
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
     print("train loader:", len(train_loader), "val loader:", len(val_loader))
 
-    crnn = model.CRNN(1, 32, 128, 37).to(device)
+    crnn = model_chacter_based.CRNN(1, 32, 128, 37).to(device)
 
     if load_model:
         checkpoint = torch.load(checkpoint_path, map_location=torch.device(device))
