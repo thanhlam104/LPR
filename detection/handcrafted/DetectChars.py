@@ -1,8 +1,5 @@
-import cv2
 import math
 
-from detection.handcrafted import Preprocess
-from detection.handcrafted import PossibleChar
 
 # const check-if-possible-char
 MIN_PIXEL_WIDTH = 2
@@ -33,76 +30,6 @@ RESIZED_CHAR_IMAGE_HEIGHT = 30
 MIN_CONTOUR_AREA = 100
 
 
-def detect_chars_in_plates(list_possible_plates):
-    count_plates = 0
-    img_contours = None
-    contours = []
-
-    # check list-possible-plates not None
-    if len(list_possible_plates) == 0:
-        return list_possible_plates
-
-    # iterate all possible-plates
-    for possible_plate in list_possible_plates:
-        # preprocess
-        possible_plate.img_gray, possible_plate.img_thresh = Preprocess.preprocess(possible_plate.img_plate)
-
-        # increase size of plate image for easier viewing and char detection
-        possible_plate.img_thresh = cv2.resize(possible_plate.img_thresh, (0, 0), fx=1.6, fy=1.6)
-
-        # threshold again to eliminate any gray areas
-        threshold_value, possible_plate.img_plate = cv2.threshold(possible_plate.imgThresh, 0.0, 255.0,
-                                                                  cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-
-        # first find all possible chars in the plate
-        list_possible_chars_in_plate = find_possible_chars_in_plate(possible_plate.img_thresh)
-
-        # given a list of all possible chars, find groups of matching chars in plate
-        list_of_list_mathing_chars_in_plate = find_list_of_list_matching_chars(list_possible_chars_in_plate)
-
-
-        # within each list of matching chars
-        for i in range(len(list_of_list_mathing_chars_in_plate)):
-            list_of_list_mathing_chars_in_plate[i].sort(
-                key=lambda matching_char: matching_char.box_centerX)  # sort char from left to right
-            list_of_list_mathing_chars_in_plate[i] = remove_inner_overlapping_chars(
-                list_of_list_mathing_chars_in_plate[i])  # add remove inner overlapping chars
-
-        # within each possible plate, suppose the longest list of potential matching chars is the actual list of chars
-        len_longest_list_of_chars = 0
-        index_longest_list_of_char = 0
-
-        for i in range(len(list_of_list_mathing_chars_in_plate)):
-            if len(list_of_list_mathing_chars_in_plate[i]) > len_longest_list_of_chars:
-                len_longest_list_of_chars = len(list_of_list_mathing_chars_in_plate)
-                index_longest_list_of_char = i
-
-        longest_list_of_matching_chars_in_plate = list_of_list_mathing_chars_in_plate[index_longest_list_of_char]
-
-    return list_possible_plates
-
-
-def find_possible_chars_in_plate(img_thresh):
-    """
-    find all possible chars in plate: find all contours that could be chars (without comparison with another chars yet)
-    :param img_thresh:
-    :return: list of possible chars: [PossibleChar1, PossibleChar2,...]
-    """
-    list_possible_chars = []  # return value
-    img_thresh_copy = img_thresh.copy
-
-    # find all contours in plate
-    contours, hierarchy = cv2.findContours(img_thresh_copy, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-
-    for contour in contours:
-        possible_char = PossibleChar.PossibleChar(contour)
-        print(possible_char)
-
-        if check_possible_char(possible_char):      # raw check possible char
-            list_possible_chars.append(possible_char)
-
-    return list_possible_chars
-
 
 def check_possible_char(possible_char):
     """
@@ -127,7 +54,7 @@ def find_list_of_list_matching_chars(list_possible_chars):
     :return: list_of_list_matching_chars [list[Char1, Char2], list[Char1, Char2],...]
     """
 
-    list_of_list_matching_chars = []        # return value
+    list_of_list_matching_chars = []  # return value
 
     for possible_char in list_possible_chars:
         # find all char in big list that match the current char
@@ -169,7 +96,7 @@ def find_list_matching_chars(possible_char, list_of_chars):
     :return:
     """
 
-    list_matching_chars = []    # return value
+    list_matching_chars = []  # return value
 
     for possible_matching_char in list_of_chars:
         if possible_matching_char == possible_char:
@@ -212,25 +139,3 @@ def angle_between_chars(char1, char2):
     angle_in_degree = angle * (180.0 / math.pi)  # calculate angle in degrees
     return angle_in_degree
 
-
-def remove_inner_overlapping_chars(list_matching_chars):
-    '''
-    with 2 char overlapping or too close, remove the inner (smaller) char -> prevent including 1 char twice
-    :param list_matching_chars:
-    :return: list_matching_chars_with_inner_char_removed
-    '''
-    list_matching_chars_with_inner_char_removed = list(list_matching_chars)
-
-    for current_char in list_matching_chars:
-        for other_char in list_matching_chars:
-            if current_char != other_char:
-                if distance_between_chars(current_char,
-                                          other_char) < current_char.box_diagonal * MIN_DIAG_SIZE_MULTIPLE_AWAY:
-                    if current_char.box_area < other_char.box_area:  # if current char is smaller than other char
-                        if current_char in list_matching_chars_with_inner_char_removed:
-                            list_matching_chars_with_inner_char_removed.remove(current_char)
-                    else:
-                        if other_char in list_matching_chars_with_inner_char_removed:
-                            list_matching_chars_with_inner_char_removed.remove(other_char)
-
-    return list_matching_chars_with_inner_char_removed

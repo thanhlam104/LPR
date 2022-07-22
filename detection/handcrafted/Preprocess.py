@@ -2,13 +2,13 @@ import cv2
 import numpy as np
 from utils import plot_img
 
+# GAUSSIAN_SMOOTH_FILTER_SIZE = (3, 3)
+# ADAPTIVE_THRESH_BLOCK_SIZE = 39
+# ADAPTIVE_THRESH_WEIGHT = 1
 
-GAUSSIAN_SMOOTH_FILTER_SIZE = (3, 3)
-ADAPTIVE_THRESH_BLOCK_SIZE = 19
-ADAPTIVE_THRESH_WEIGHT = 9
+def preprocess(imgOriginal, ADAPTIVE_THRESH_BLOCK_SIZE, ADAPTIVE_THRESH_WEIGHT):
+    GAUSSIAN_SMOOTH_FILTER_SIZE = (3, 3)
 
-
-def preprocess(imgOriginal):
     imgGrayscale = extract_value(imgOriginal)
 
     imgMaxContrastGrayscale = maximize_contrast(imgGrayscale)

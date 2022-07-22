@@ -2,6 +2,7 @@ import cv2
 from utils import plot_img
 import numpy as np
 import matplotlib.pyplot as plt
+from detection.handcrafted import Preprocess
 
 
 def find_contours(dimensions, img):
@@ -61,11 +62,20 @@ def find_contours(dimensions, img):
 
 def segment_characters(image):
     # Preprocess cropped license plate image
-    img_lp = cv2.resize(image, (333, 75))
-    img_gray_lp = cv2.cvtColor(img_lp, cv2.COLOR_BGR2GRAY)
-    _, img_binary_lp = cv2.threshold(img_gray_lp, 200, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    img_binary_lp = cv2.erode(img_binary_lp, (3, 3))
+
+    img_lp = cv2.resize(image, (333, 75), interpolation=cv2.INTER_AREA)
+    if len(img_lp.shape) == 3:
+        img_gray_lp = cv2.cvtColor(img_lp, cv2.COLOR_BGR2GRAY)
+    else:
+        img_gray_lp = img_lp
+
+    img_gray_lp = Preprocess.maximize_contrast(img_gray_lp)
+
+    _, img_gray_lp = cv2.threshold(img_gray_lp, thresh=50, maxval=255.0, type=cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+
+    img_binary_lp = cv2.erode(img_gray_lp, (3, 3))
     img_binary_lp = cv2.dilate(img_binary_lp, (3, 3))
+
 
     LP_WIDTH = img_binary_lp.shape[0]
     LP_HEIGHT = img_binary_lp.shape[1]
@@ -90,13 +100,20 @@ def segment_characters(image):
 
 
 if __name__ == '__main__':
-    img = cv2.imread('img_plate/img14.jpg')
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    from evaluate import show_results
+    for i in range(10):
+        img = cv2.imread(f'dataset/plates/train/img{i}_0.jpg')
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    char = segment_characters(img)
+        # plot_img(img)
 
-    for i in range(len(char)):
-        plt.subplot(1, len(char) + 1, i + 1)
-        plt.imshow(char[i], cmap='gray')
-        plt.axis('off')
-    plt.show()
+        char = segment_characters(img)
+        pred_str = [show_results(char)]
+        # print(pred_str)
+
+        for j in range(len(char)):
+            plt.subplot(1, len(char) + 1, j + 1)
+            plt.imshow(char[j], cmap='gray')
+            plt.axis('off')
+        plt.show()
+

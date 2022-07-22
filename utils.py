@@ -104,3 +104,19 @@ def iou_per_box(box_pred, box_label):
 
 
     return intersection / (box1_area + box2_area - intersection + 1e-6)
+
+
+def label2char(labels):
+    CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    CHAR2LABEL = {char: i + 1 for i, char in enumerate(CHARS)}
+    LABEL2CHAR = {label: char for char, label in CHAR2LABEL.items()}
+
+    labels = list(labels)
+    chars = []
+
+    for label in labels:
+        plaint = ''
+        for i in label:
+            plaint += LABEL2CHAR[int(i)]
+        chars.append(plaint)
+    return chars

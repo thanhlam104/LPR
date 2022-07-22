@@ -3,11 +3,13 @@ import cv2
 import math
 import random
 import numpy as np
+import torch
 
 from detection.handcrafted import Preprocess
 from detection.handcrafted import PossibleChar
 from detection.handcrafted import PossiblePlate
 from detection.handcrafted import DetectChars
+from utils import box_center2corner, iou_per_box
 
 # module level variables
 PLATE_WIDTH_PADDING_FACTOR = 1.3
@@ -15,7 +17,7 @@ PLATE_HEIGHT_PADDING_FACTOR = 1.5
 
 
 ##################################
-def detect_plates(img_original):
+def detect_plates(img_original, ADAPTIVE_THRESH_BLOCK_SIZE, ADAPTIVE_THRESH_WEIGHT):
     list_possible_plates = []
 
     h, w, c = img_original.shape
@@ -24,7 +26,7 @@ def detect_plates(img_original):
     img_thresh = np.zeros((h, w, 1), np.uint8)
     img_contours = np.zeros((h, w, 1), np.uint8)
 
-    img_gray_scale, img_thresh = Preprocess.preprocess(img_original)
+    img_gray_scale, img_thresh = Preprocess.preprocess(img_original, ADAPTIVE_THRESH_BLOCK_SIZE, ADAPTIVE_THRESH_WEIGHT)
 
     list_possible_chars = find_possible_chars(img_thresh)
 
@@ -104,3 +106,6 @@ def extract_plate(img_original, list_matching_chars):
     possible_plate.img_plate = img_cropped
 
     return possible_plate
+
+
+

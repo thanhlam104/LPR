@@ -21,10 +21,8 @@ class Dataset(Dataset):
         img_path = "./dataset" + self.list_[idx].strip()[1:]
 
         img = Image.open(img_path)
-        # img = img.resize((self.img_width, self.img_height), resample=Image.BILINEAR)
 
         img = np.array(img)
-        # img = (img / 127.5) - 1.0
 
 
         if self.tensor_format:
@@ -51,7 +49,7 @@ class Dataset(Dataset):
                 y_max = max(y3, y4)
                 box_corner = [x_min, y_min, x_max, y_max]
 
-        return img, box_corner, plate_label, plate_length
+        return img, box_corner
 
     def __len__(self):
         return len(self.list_)
@@ -59,14 +57,11 @@ class Dataset(Dataset):
 
 if __name__ == '__main__':
     data_split = 'data_split/train.txt'
-    img_path = '../ALPR_home/images/img_010012.jpg'
 
     dataset = Dataset(data_split)
-    for i, (img, box, plate_label, plate_length) in enumerate(dataset):
+    for i, (img, box) in enumerate(dataset):
         print(img.shape)
         print(box)
-        print(plate_label)
-        print(plate_length)
 
         plt.imshow(img)
         plt.show()
