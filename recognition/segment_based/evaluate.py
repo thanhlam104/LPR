@@ -19,16 +19,10 @@ warnings.filterwarnings('ignore')
 
 
 
-def show_results(chars):
-    from model import Segment_character
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    print(device)
-
+def show_results(chars, model):
     #################################################################
-    model = Segment_character(36).to(device)
-    checkpoint_path = 'checkpoint/character_model.pt'
-    checkpoint = torch.load(checkpoint_path, map_location=torch.device(device))
-    model.load_state_dict(checkpoint)
+    # model = Segment_character(36).to(device)
+
 
     #################################################################
     CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'
@@ -50,7 +44,14 @@ def show_results(chars):
 
 
 def main():
+    from model import Segment_character
     from segment_character import segment_characters
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    model = Segment_character(36).to(device)
+    checkpoint_path = 'checkpoint/character_model.pt'
+    checkpoint = torch.load(checkpoint_path, map_location=torch.device(device))
+    model.load_state_dict(checkpoint)
+
     cer = CharErrorRate()
     CER = []
     data_split = 'data_split/test.txt'
@@ -58,7 +59,7 @@ def main():
     for i, (img, box, target, plate_length) in enumerate(dataset):
         img = np.array(img, dtype='uint8')
         chars = segment_characters(img)
-        pred_str = [show_results(chars)]
+        pred_str = [show_results(chars, model)]
         target_str = label2char([target])
 
         cer_score = cer(pred_str, target_str)
