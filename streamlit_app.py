@@ -21,10 +21,10 @@ if __name__=='__main__':
         img = cv2.imread('img.jpg')
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         st.subheader('Character-based method')
-        st.img(lpr.end2end_character_based(img))
+        st.image(lpr.end2end_character_based(img))
 
         st.subheader('Segment-based method')
-        st.img(lpr.end2end_segment_based(img))
+        st.image(lpr.end2end_segment_based(img))
 
 
 
