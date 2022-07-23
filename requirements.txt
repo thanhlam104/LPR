@@ -1,0 +1,8 @@
+opencv-python
+streamlit
+torchinfo
+numpy
+matplotlib
+torch
+torchmetrics
+scipy
