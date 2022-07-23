@@ -59,13 +59,13 @@ def detect_box(data_split, mode='train'):
                 iou = iou_per_box(torch.tensor(box_pr_corner), torch.tensor(box_gt))
                 iou_plate.append(iou)
             iou_dataset.append(iou_plate[0])
-            # cv2.imwrite(f'dataset/plates/{mode}/img{i}_{j}.jpg', list_possible_plate[j].img_plate)
+            cv2.imwrite(f'dataset/plates/{mode}/img{i}_{j}.jpg', list_possible_plate[j].img_plate)
 
         else:
             count_empty_detect += 1
             iou_dataset.append(0)
             nonDetect_img += 0
-            # cv2.imwrite(f'dataset/plates/{mode}/img{i}_{j}.jpg', img)
+            cv2.imwrite(f'dataset/plates/{mode}/img{i}_{j}.jpg', img)
 
         if i % 100 == 0:
             print(i)

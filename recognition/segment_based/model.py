@@ -24,7 +24,7 @@ class Segment_character(nn.Module):
 
 
 if __name__ == '__main__':
-    model = Segment_character(5)
+    model = Segment_character(36)
     x = torch.randn(2, 1, 28, 28)
     output = model(x)
     summary(model, (1, 1, 28, 28))
