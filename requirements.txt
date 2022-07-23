@@ -1,4 +1,4 @@
-opencv-python headless
+opencv-python-headless
 streamlit
 torchinfo
 numpy
@@ -6,3 +6,4 @@ matplotlib
 torch
 torchmetrics
 scipy
+opencv-python
