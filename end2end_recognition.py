@@ -44,7 +44,7 @@ def end2end_character_based(img): # RGB image
         preds_str = label2char(preds)
         print("predict plate:", preds_str[0])
 
-        res += preds_str[0] + ' - '
+        res += preds_str[0] + ' \n '
 
 
     return res
@@ -82,6 +82,6 @@ def end2end_segment_based(img): # RGB image
 
         pred_str = [evaluate.show_results(chars, model1)]
         print("predict plate:", pred_str[0])
-        res += pred_str[0] + ' - '
+        res += pred_str[0] + ' \n '
 
     return res
