@@ -43,7 +43,9 @@ def end2end_character_based(img): # RGB image
         preds = ctc_decoder.ctc_decode(log_probs, method='beam_search', beam_size=10)
         preds_str = label2char(preds)
         print("predict plate:", preds_str[0])
+
         res += preds_str[0] + ' - '
+
 
     return res
 
