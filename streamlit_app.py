@@ -20,7 +20,8 @@ if __name__=='__main__':
 
         img = cv2.imread('img.jpg')
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img2 = img
+        img2 = cv2.imread('img.jpg')
+        img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         st.subheader('Character-based method')
         st.image(lpr.end2end_character_based(img))
 
