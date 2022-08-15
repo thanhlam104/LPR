@@ -20,25 +20,17 @@ if __name__=='__main__':
 
         img = cv2.imread('img.jpg')
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img2 = cv2.imread('img.jpg')
-        img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         st.subheader('Character-based method')
         st.image(lpr.end2end_character_based(img))
 
-        st.subheader('Segment-based method')
-        st.image(lpr.end2end_segment_based(img2))
 
     else:
         st.subheader("Example")
         img = cv2.imread('test_img/lpr5.jpg')
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img2 = cv2.imread('test_img/lpr5.jpg')
-        img2 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         st.subheader('Character-based method')
         st.image(lpr.end2end_character_based(img))
 
-        st.subheader('Segment-based method')
-        st.image(lpr.end2end_segment_based(img2))
 
 
 
